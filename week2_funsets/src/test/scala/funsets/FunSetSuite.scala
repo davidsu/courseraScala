@@ -77,6 +77,8 @@ class FunSetSuite extends FunSuite {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+    val oneAndTwo = union(s1, s2)
+    val twoAndThree = union(s1, s3)
   }
 
   /**
@@ -109,6 +111,46 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "Union 3")
     }
   }
+  test("intersect") {
+    new TestSets {
+      assert(intersect(oneAndTwo, twoAndThree)(1) === true, "intersect contains 1")
+      assert(intersect(oneAndTwo, twoAndThree)(2) !== true, "intersect doesn't contains 2")
+      assert(intersect(oneAndTwo, twoAndThree)(3) === false, "intersect doesn't contains 3")
+    }
+  }
 
+  test("diff") {
+    new TestSets {
+      assert(diff(oneAndTwo, twoAndThree)(2) === true, "diff contains 2")
+      assert(diff(oneAndTwo, twoAndThree)(1) !== true, "diff doesn't contains 1")
+      assert(diff(oneAndTwo, twoAndThree)(3) === false, "diff doesn't contains 3")
+    }
+  }
+
+  test("filter") {
+    new TestSets {
+      def f(i: Int):Boolean = i == 1
+      assert(filter(oneAndTwo, f)(1) === true, "filter contains 1")
+      assert(filter(oneAndTwo, f)(2) !== true, "filter doesn't contains 2")
+    }
+  }
+
+  test("exists") {
+    new TestSets {
+      val s = union(s1, s2)
+      assert(exists(s, i => i == 1 ), "Exists 1")
+      assert(exists(s, i => i == 2 ), "Exists 2")
+      assert(!exists(s, i => i == 3 ), "Exists 3")
+    }
+  }
+
+  test("map") {
+    new TestSets {
+      val mapped = map(oneAndTwo, _ + 5)
+      assert(mapped(6), "Exists 6")
+      assert(mapped(7), "Exists 7")
+      assert(!mapped(1), "not Exists 1")
+    }
+  }
 
 }
